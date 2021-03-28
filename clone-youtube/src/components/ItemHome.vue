@@ -1,0 +1,118 @@
+<template>
+  <div class="home-item">
+    <router-link
+      class="item"
+      :to="{
+        name: 'watch',
+        query: {
+          v: item.id,
+        },
+      }"
+    >
+      <img
+        :src="item.snippet.thumbnails.standard.url"
+        alt="imgvideo"
+        class="item__img"
+      />
+      <div class="item__title">
+        <img
+          class="item__title-img-channel"
+          src="https://yt3.ggpht.com/ytc/AAUvwnjYU4gHW9Mol_WLE2tu70Oj9Og0SlY-ZOy5mdngCw=s68-c-k-c0x00ffffff-no-rj"
+          alt="img-channel"
+        />
+        <div class="item__title-des">
+          <h4 class="item__title-name">
+            {{ item.snippet.title }}
+          </h4>
+          <span class="item__name-channel">{{
+            item.snippet.channelTitle
+          }}</span>
+          <div class="item__footer">
+            <span class="item__footer-view"
+              >{{ item.snippet.view | formatView }}
+
+              Lượt xem</span
+            >
+            <span class="item__footer-time-up">{{
+              item.snippet.publishedAt | formatDate
+            }}</span>
+          </div>
+        </div>
+      </div>
+    </router-link>
+  </div>
+</template>
+
+<script>
+import { mapActions, mapState } from "vuex";
+export default {
+  props: {
+    item: {
+      type: Object,
+    },
+    index: {
+      type: Number,
+    },
+  },
+  data() {
+    return {};
+  },
+
+  computed: {},
+};
+</script>
+
+<style scoped>
+.home-item {
+  padding-bottom: 20px;
+}
+.item {
+  text-decoration: none;
+  color: var(--text-color);
+}
+.item__img {
+  width: 100%;
+}
+.item__title {
+  margin: 8px 0;
+  display: flex;
+  align-items: center;
+}
+.item__title-img-channel {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+.item__title-des {
+  padding-left: 16px;
+}
+.item__title-name {
+  margin: 4px 0;
+  line-height: 1.8rem;
+  font-size: 1.4rem;
+  color: var(--text-color);
+  height: 3.6rem;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+.item__name-channel {
+  font-size: 1.4rem;
+  line-height: 1.6rem;
+  padding: 8px 0;
+}
+.item__footer {
+  margin: 8px 0;
+  font-size: 1.4rem;
+}
+.item__footer-time-up {
+  padding-left: 8px;
+}
+@media (min-width: 640px) and (max-width: 1240px) {
+  .item__footer-time-up {
+    display: block;
+    padding: 8px 0;
+  }
+}
+</style>
