@@ -82,6 +82,7 @@
                   class="login-form__password"
                   :type="passwordType"
                   v-model="password"
+                  @keyup.enter="onSignIn"
                   error-messages="errors"
                   label="Password"
                   placeholder="Password"
@@ -91,23 +92,24 @@
                   <span> Forget PassWord ? </span>
                 </a>
               </ValidationProvider>
-              <span class="errors-text">{{ error }}</span>
+
               <div class="login-form__showpass">
                 <input
                   type="checkbox"
                   @click="switchVisibility"
                   class="login-form__showpass-checkbox"
                 />
-                <span>Show Password</span>
+
+                <span class="show-password">Show Password</span>
               </div>
+              <span class="errors-text">{{ error }}</span>
               <div class="login-form__btn">
-                <router-link
-                  tag="button"
+                <button
                   class="login-form__logup btn btn-primary"
-                  to="/logup"
+                  @click="onSignup"
                 >
                   Create new account
-                </router-link>
+                </button>
                 <button
                   @click.prevent="onSignIn"
                   type="submit"
@@ -142,6 +144,9 @@ export default {
     }
   },
   methods: {
+    onSignup() {
+      this.push({ path: "/logup" });
+    },
     onSignIn() {
       this.authenticateUser({
         isLogin: true,
@@ -150,13 +155,15 @@ export default {
       })
         .then((result) => {
           if (result.success) {
-            this.initAuth().then(() => {
-              this.getDataFb();
+            this.initAuth().then(async () => {
+              await this.getDataFb().then(() => {
+                this.$router.push({ path: "/" });
+              });
             });
           }
         })
         .catch((error) => {
-          console.log(error);
+          this.error = "Tài khoản hoặc mật khẩu sai!";
         });
     },
     switchVisibility() {
@@ -233,6 +240,7 @@ export default {
   font-weight: 600;
   line-height: 2rem;
 }
+
 .login-form__forget-pass {
   display: block;
   color: var(--success-color);
@@ -244,7 +252,7 @@ export default {
 .login-form__btn {
   display: flex;
   justify-content: space-between;
-  margin-top: 80px;
+  margin-top: 40px;
 }
 .login-form__logup {
   border: none;

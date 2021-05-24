@@ -156,7 +156,6 @@ const actions = {
     $cookies.remove('expirationToken')
     $cookies.remove('email')
     $cookies.remove('idUser')
-
     commit('clearToken')
   },
   /* Data */

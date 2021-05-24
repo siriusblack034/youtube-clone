@@ -5,7 +5,7 @@
       :to="{
         name: 'watch',
         query: {
-          v: item.id,
+          v: item.id.videoId ? item.id.videoId : item.id,
         },
       }"
     >

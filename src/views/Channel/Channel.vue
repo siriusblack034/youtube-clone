@@ -59,7 +59,7 @@
             </button>
           </div>
           <div class="container">
-            <!-- <feature v-if="tabNumber == 1" :channel="channel"></feature> -->
+            <feature v-if="tabNumber == 1" :channel="channel"></feature>
             <videos v-if="tabNumber == 2" />
             <about v-if="tabNumber == 3" :channel="channel"></about>
           </div>
@@ -178,8 +178,8 @@ export default {
 .header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin: 30px 130px;
+  justify-content: space-around;
+  min-height: 140px;
 }
 .header-title {
   display: flex;

@@ -102,6 +102,7 @@ export default {
   watch: {
     async $route(to, from) {
       let type = to.query.list;
+      console.log(11111111111111111);
       if (type == "LL") this.type = "videoLiked";
       else if (type == "WL") this.type = "watchLate";
       else if (type == "W") this.type = "watched";
@@ -120,9 +121,7 @@ export default {
 .history-title {
   font-size: 2rem;
 }
-.history-list {
-}
-.history-time {
+time {
   font-size: 1.7rem;
 }
 .history-list-video {
@@ -133,6 +132,11 @@ export default {
 }
 .item {
   margin: 0;
+}
+.history-time {
+  font-size: 1.6rem;
+  font-weight: 500;
+  padding-left: 20px;
 }
 .history-list-video i {
   font-size: 2rem;

@@ -51,7 +51,7 @@
           </router-link>
         </ul>
         <ul class="body-top__list">
-          <router-link class="body-top__item" tag="li" to="/">
+          <router-link class="body-top__item" tag="li" to="/404Found">
             <i class="fas fa-photo-video"></i>
             Thư viện
           </router-link>
@@ -132,39 +132,39 @@
         <ul class="body-top__list">
           <h3>Dịch vụ khác của YOUTUBE</h3>
 
-          <router-link class="body-top__item" tag="li" to="/">
+          <router-link class="body-top__item" tag="li" to="/404Found">
             <i class="fas fa-gamepad"></i>
             Game
           </router-link>
 
-          <router-link class="body-top__item" tag="li" to="/">
+          <router-link class="body-top__item" tag="li" to="/404Found">
             <i class="fas fa-history"></i>
             Trực tiếp
           </router-link>
 
-          <router-link class="body-top__item" tag="li" to="/ChannelRegister">
+          <router-link class="body-top__item" tag="li" to="/404Found">
             <i class="fas fa-trophy"></i>
             Thể thao
           </router-link>
         </ul>
 
         <ul class="body-top__list">
-          <router-link class="body-top__item" tag="li" to="/">
+          <router-link class="body-top__item" tag="li" to="/404Found">
             <i class="fas fa-cog"></i>
             Cài đặt
           </router-link>
 
-          <router-link class="body-top__item" tag="li" to="/">
+          <router-link class="body-top__item" tag="li" to="/404Found">
             <i class="fas fa-flag"></i>
             Lịch sử báo cáo
           </router-link>
 
-          <router-link class="body-top__item" tag="li" to="/ChannelRegister">
+          <router-link class="body-top__item" tag="li" to="/404Found">
             <i class="fas fa-question-circle"></i>
             Trợ giúp
           </router-link>
 
-          <router-link class="body-top__item" tag="li" to="/ChannelRegister">
+          <router-link class="body-top__item" tag="li" to="/404Found">
             <i class="fas fa-exclamation-triangle"></i>
             Gửi phản hồi
           </router-link>
@@ -185,8 +185,8 @@ import NoticeLogin from "../../components/NoticeLogin.vue";
 export default {
   components: { NoticeLogin },
   props: ["styles", "viewpoint", "isLogin"],
-  created() {
-    this.callChannel();
+  async created() {
+    await this.callChannel();
   },
   computed: {
     ...mapState("listVideo", ["channelDetails"]),
@@ -204,19 +204,17 @@ export default {
   },
   methods: {
     ...mapActions("listVideo", ["setChannelDetails"]),
-    callChannel() {
-      this.listChannel.forEach(async (channel, index) => {
-        if (index <= 6) {
-          let id = channel.id;
-          await this.setChannelDetails({
-            part: "snippet",
-            id,
-          }).then(() => {
-            this.channels.push(this.channelDetails);
-          });
-        }
+    async callChannel() {
+      let id = this.listChannel[0].id;
+      console.log(this.listChannel[0].id);
+      await this.setChannelDetails({
+        part: "snippet",
+        id,
       });
+      console.log(this.channelDetails);
+      this.channels.push(this.channelDetails);
     },
+
     hideNav() {
       if (this.viewpoint == 0) {
         this.styles.display = "none";

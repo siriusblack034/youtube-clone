@@ -34,8 +34,14 @@
             </div>
           </div>
           <div class="home-item" v-for="(item, index) in items" :key="index">
-            <item-trending v-if="isVideo(item)" :item="item"></item-trending>
-            <item-channel v-if="isChannel(item)" :item="item"></item-channel>
+            <item-trending
+              v-if="isVideo(item) && checkData"
+              :item="item"
+            ></item-trending>
+            <item-channel
+              v-if="isChannel(item) && checkData"
+              :item="item"
+            ></item-channel>
           </div>
           <!-- <loading-infinite
             class="loading-infinite"
@@ -68,6 +74,7 @@ export default {
       filterTime: ">4 phút & < 20 phút",
       selectFilter: false,
       query: "",
+      checkData: false,
     };
   },
   methods: {
@@ -84,6 +91,7 @@ export default {
         part: "statistics",
       });
       this.items = this.searchList;
+      this.checkData = true;
     },
     searchQuery() {
       let query = this.$route.query.search_query.split(" ").join("+");
@@ -104,14 +112,9 @@ export default {
   },
   watch: {
     $route(to, from) {
+      this.checkData = false;
       this.query = to.query.search_query.split(" ").join("+");
       this.setCreated();
-    },
-    items: {
-      handler(val, oldVal) {
-        this.items = val;
-      },
-      deep: true,
     },
   },
 };

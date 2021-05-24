@@ -41,26 +41,27 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
+import { mapActions, mapState } from "vuex";
 
 export default {
   props: {
-    item: Object,
+    item: {
+      type: Object,
+      default: null,
+    },
     id: {
       type: String,
       default: null,
     },
   },
   async created() {
-    if (this.id) {
-      await this.setVideo({
-        part: "statistics,contentDetails,snippet",
-        id: this.id,
-      });
-      this.video = this.$store.state.listVideo.video.data.items[0];
-    } else {
-      this.video = this.item;
-    }
+    this.callData();
+  },
+  computed: {
+    returnItem() {
+      console.log(this.item);
+      return this.item;
+    },
   },
   data() {
     return {
@@ -70,9 +71,18 @@ export default {
       video: "",
     };
   },
-  computed: {},
   methods: {
     ...mapActions("listVideo", ["setVideo", "addInformVideo"]),
+    async callData() {
+      if (this.id) {
+        await this.setVideo({
+          part: "statistics,contentDetails,snippet",
+          id: this.id,
+        });
+        this.video = this.$store.state.listVideo.video.data.items[0];
+      } else this.video = this.returnItem;
+      console.log(this.video);
+    },
     formatId() {
       if (this.id == null) {
         if (this.$route.name == "Trending") {

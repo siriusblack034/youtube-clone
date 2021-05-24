@@ -7,7 +7,6 @@
         :key="index"
         :item="item"
         :index="index"
-        :isChannel="true"
       />
     </VueSlickCarousel>
   </div>
@@ -26,7 +25,7 @@ export default {
   created() {
     this.listVideo = this.searchList;
   },
-  
+
   data() {
     return {
       listVideo: [],
@@ -70,16 +69,23 @@ export default {
   computed: {
     ...mapState("listVideo", ["searchList"]),
   },
+  methods: {},
 };
 </script>
 <style  >
-.slick-prev:before,
+.slick-prev::before,
 .slick-next::before {
-  color: black;
+  color: white;
   font-size: 5rem;
+  position: absolute;
+  bottom: 100%;
+  opacity: 0.8;
 }
-.slick-prev {
-  left: -60px;
+.slick-prev::before {
+  left: 30px;
+}
+.slick-next::before {
+  right: 35px;
 }
 </style>
 <style scoped>
