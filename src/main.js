@@ -25,11 +25,34 @@ Vue.filter('formatDate', (value) => {
 })
 Vue.filter('durationVideo', (value) => {
   let duration = value.split('PT')[1]
-  let s = duration.split('M')[1].split('S')[0]
-  let m = duration.split('M')[0].split('H')[1]
+  let time = '',
+    h = ''
+  if (duration.includes('H')) {
+    time += `${duration.split('H')[0]}:`
+    h = duration.split('H')[1]
+  }
+  else {
+    h = duration.split('H')[0]
+  }
+  if (duration.includes('M')) {
+    let m = parseInt(h.split('M')[0])
 
-
-
+    time += m > 9 ? `${h.split('M')[0]}:` : `0${h.split('M')[0]}:`
+    h = h.split('M')[1]
+  }
+  else {
+    time += '00:'
+    h = duration.split('M')[0]
+  }
+  if (duration.includes('S')) {
+    let s = parseInt(h.split('S')[0])
+    time += s > 9 ? `${h.split('S')[0]}` : `0${h.split('S')[0]}`
+  }
+  else {
+    time += '00'
+  }
+  console.log(time);
+  return time
 })
 Vue.filter('formatView', (val) => {
   let value = Number(val)

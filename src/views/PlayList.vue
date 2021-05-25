@@ -1,28 +1,27 @@
 <template>
-  <div class="container">
+  <div class="container" v-if="check && isLogin">
     <div class="gird">
       <div class="row">
         <div class="col l-2 m-0 c-0"></div>
         <div class="col l-10 m-12 c-12">
           <div class="row">
             <div class="col l-9 m-9 c-12">
-              <h3 v-if="type == 'watched'" class="history-title">
-                Lịch sử xem
+              <h3 class="history-title">
+                {{ title }}
               </h3>
               <div
                 class="history-list"
                 v-for="(time, index) in times"
                 :key="index"
               >
-                <span v-if="type == 'watched'" class="history-time">{{
-                  time
-                }}</span>
+                <span class="history-time">{{ time }}</span>
                 <ul
                   class="history-list-video"
                   v-for="(video, index) in filterVideo(time)"
                   :key="index"
                 >
-                  <item-trending :id="video.id" class="item"> </item-trending>
+                  <item-trending :item="video.video" class="item">
+                  </item-trending>
                   <div
                     class="history-list-video__cancel"
                     @click="deleteVideo(video.id)"
@@ -43,7 +42,9 @@
 <script>
 import { mapActions, mapState } from "vuex";
 import ItemTrending from "../components/ItemTrending.vue";
+import { checkAuth } from "../mixins/checkAuth";
 export default {
+  mixins: [checkAuth],
   components: { ItemTrending },
   async created() {
     await this.createdMethod();
@@ -53,6 +54,8 @@ export default {
       type: "",
       list: [],
       times: [],
+      check: false,
+      title: "",
     };
   },
   computed: {
@@ -60,37 +63,54 @@ export default {
     ...mapState("listVideo", "video"),
   },
   methods: {
-    ...mapActions("listVideo", ["setVideo"]),
+    ...mapActions("listVideo", ["setVideo", "addInformVideo"]),
     ...mapActions("user", ["deleteVideoFb"]),
     filterVideo(time) {
-      console.log(time);
-      return this.list.filter((video) => video.date == time);
+      return this.list.filter((video) => video.time == time);
     },
-    createdMethod() {
+    async createdMethod() {
       let type = this.$route.query.list;
-      if (type == "LL") this.type = "videoLiked";
-      else if (type == "WL") this.type = "watchLate";
-      else if (type == "W") this.type = "watched";
-      this.formatTime();
+      if (type == "LL") {
+        this.type = "videoLiked";
+        this.title = "Video Đã Thích";
+      } else if (type == "WL") {
+        this.type = "watchLate";
+        this.title = "Video Xem Sau";
+      } else if (type == "W") {
+        this.type = "watched";
+        this.title = "Video Đã Xem";
+      }
+      await this.formatTime();
+      console.log(this.list);
+      this.check = true;
     },
-    formatTime() {
-      this.list = this.listVideo[`${this.type}`].map((video) => {
-        let date = new Date(video.timeAt);
-        let year = date.getFullYear();
-        let month = date.getMonth() + 1;
-        let day = date.getDate();
-        let time = `${day}/${month}/${year}`;
-        let v = {
-          date: time,
-          id: video.id,
-        };
-        return v;
-      });
-      this.times = new Set(
-        this.list.map((video) => {
-          return video.date;
+    async formatTime() {
+      this.list = await Promise.all(
+        this.listVideo[`${this.type}`].map(async (video) => {
+          let date = new Date(video.timeAt);
+          let year = date.getFullYear();
+          let month = date.getMonth() + 1;
+          let day = date.getDate();
+          let time = `${day}/${month}/${year}`;
+          await this.setVideo({
+            part: "statistics,contentDetails,snippet",
+            id: video.id,
+          });
+          let videoId = this.$store.state.listVideo.video.data.items[0];
+          let v = {
+            time,
+            video: videoId,
+          };
+          return v;
         })
       );
+      console.log(this.list);
+      this.times = new Set(
+        this.list.map((video) => {
+          return video.time;
+        })
+      );
+      console.log(this.times);
     },
     deleteVideo(id) {
       this.deleteVideoFb({
@@ -100,13 +120,9 @@ export default {
     },
   },
   watch: {
-    async $route(to, from) {
-      let type = to.query.list;
-      console.log(11111111111111111);
-      if (type == "LL") this.type = "videoLiked";
-      else if (type == "WL") this.type = "watchLate";
-      else if (type == "W") this.type = "watched";
-      await this.formatTime();
+    $route(to, from) {
+      this.check = false;
+      this.createdMethod();
     },
   },
 };
@@ -137,6 +153,10 @@ time {
   font-size: 1.6rem;
   font-weight: 500;
   padding-left: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  padding-top: 16px;
 }
 .history-list-video i {
   font-size: 2rem;

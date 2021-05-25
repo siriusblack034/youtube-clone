@@ -11,7 +11,7 @@
     >
       <div class="col c-6 m-4 l-3 item__img">
         <img :src="video.snippet.thumbnails.medium.url" alt="img-video" />
-        <span>4:40</span>
+        <span>{{ video.contentDetails.duration | durationVideo }}</span>
       </div>
       <div class="col c-6 m-8 l-9 item__content">
         <h3 class="item__content-title max-line">{{ video.snippet.title }}</h3>
@@ -81,11 +81,10 @@ export default {
         });
         this.video = this.$store.state.listVideo.video.data.items[0];
       } else this.video = this.returnItem;
-      console.log(this.video);
     },
     formatId() {
       if (this.id == null) {
-        if (this.$route.name == "Trending") {
+        if (this.$route.name == "Trending" || this.$route.name == "Playlist") {
           return this.item.id;
         } else {
           return this.item.id.videoId;

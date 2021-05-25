@@ -26,7 +26,10 @@
             to="/"
             :class="$route.name == 'Home' ? 'bg-red' : ''"
           >
-            <i class="fas fa-home"></i>
+            <i
+              class="fas fa-home"
+              :style="{ color: $route.name == 'Home' ? '#fa2b2b' : '' }"
+            ></i>
             Trang chủ
           </router-link>
 
@@ -36,7 +39,10 @@
             :class="$route.name == 'Trending' ? 'bg-red' : ''"
             to="/trending"
           >
-            <i class="fas fa-fire"></i>
+            <i
+              class="fas fa-fire"
+              :style="{ color: $route.name == 'Trending' ? '#fa2b2b' : '' }"
+            ></i>
             Thịnh Hành
           </router-link>
 
@@ -60,6 +66,11 @@
             v-if="isLogin"
             class="body-top__item"
             tag="li"
+            :class="
+              $route.name == 'Playlist' && $route.query.list == 'W'
+                ? 'bg-red'
+                : ''
+            "
             :to="{
               path: '/playlist',
               query: {
@@ -67,7 +78,15 @@
               },
             }"
           >
-            <i class="fas fa-history"></i>
+            <i
+              class="fas fa-history"
+              :style="{
+                color:
+                  $route.name == 'Playlist' && $route.query.list == 'W'
+                    ? '#fa2b2b'
+                    : '',
+              }"
+            ></i>
             Video đã xem
           </router-link>
 
@@ -75,6 +94,11 @@
             v-if="isLogin"
             class="body-top__item"
             tag="li"
+            :class="
+              $route.name == 'Playlist' && $route.query.list == 'LL'
+                ? 'bg-red'
+                : ''
+            "
             :to="{
               path: '/playlist',
               query: {
@@ -82,7 +106,15 @@
               },
             }"
           >
-            <i class="fas fa-thumbs-up"></i>
+            <i
+              class="fas fa-thumbs-up"
+              :style="{
+                color:
+                  $route.name == 'Playlist' && $route.query.list == 'LL'
+                    ? '#fa2b2b'
+                    : '',
+              }"
+            ></i>
             Video yêu thích
           </router-link>
 
@@ -90,6 +122,11 @@
             v-if="isLogin"
             class="body-top__item"
             tag="li"
+            :class="
+              $route.name == 'Playlist' && $route.query.list == 'WL'
+                ? 'bg-red'
+                : ''
+            "
             :to="{
               path: '/playlist',
               query: {
@@ -97,7 +134,15 @@
               },
             }"
           >
-            <i class="fas fa-clock"></i>
+            <i
+              class="fas fa-clock"
+              :style="{
+                color:
+                  $route.name == 'Playlist' && $route.query.list == 'WL'
+                    ? '#fa2b2b'
+                    : '',
+              }"
+            ></i>
             Xem sau
           </router-link>
         </ul>
@@ -283,11 +328,12 @@ export default {
 }
 .body-top__item:hover {
   background-color: rgba(0, 0, 0, 0.2);
+  color: black;
 }
 .body-top__item {
   color: var(--text-color);
   text-decoration: none;
-  opacity: 0.8;
+  opacity: 0.9;
   display: flex;
   align-items: center;
 }
