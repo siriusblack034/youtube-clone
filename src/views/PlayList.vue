@@ -5,7 +5,7 @@
         <div class="col l-2 m-0 c-0"></div>
         <div class="col l-10 m-12 c-12">
           <div class="row">
-            <div class="col l-9 m-9 c-12">
+            <div class="col l-10 m-10 c-12">
               <h3 class="history-title">
                 {{ title }}
               </h3>
@@ -14,24 +14,32 @@
                 v-for="(time, index) in times"
                 :key="index"
               >
-                <span class="history-time">{{ time }}</span>
+                <span
+                  class="history-time"
+                  v-if="type == 'videoLiked' || type == 'watched'"
+                  >{{ time }}</span
+                >
                 <ul
                   class="history-list-video"
                   v-for="(video, index) in filterVideo(time)"
                   :key="index"
                 >
-                  <item-trending :item="video.video" class="item">
+                  <item-trending
+                    :item="video.video"
+                    :checkVideo="type == 'watchLate' ? false : true"
+                    class="item"
+                  >
                   </item-trending>
                   <div
                     class="history-list-video__cancel"
-                    @click="deleteVideo(video.id)"
+                    @click="deleteVideo(video.video.id)"
                   >
                     <i class="fas fa-times"></i>
                   </div>
                 </ul>
               </div>
             </div>
-            <div class="col l-3 m-3 c-12"></div>
+            <div class="col l-2 m-2 c-12"></div>
           </div>
         </div>
       </div>
@@ -61,12 +69,15 @@ export default {
   computed: {
     ...mapState("user", ["listVideo"]),
     ...mapState("listVideo", "video"),
+    getList() {
+      return this.list;
+    },
   },
   methods: {
     ...mapActions("listVideo", ["setVideo", "addInformVideo"]),
     ...mapActions("user", ["deleteVideoFb"]),
     filterVideo(time) {
-      return this.list.filter((video) => video.time == time);
+      return this.getList.filter((video) => video.time == time);
     },
     async createdMethod() {
       let type = this.$route.query.list;
@@ -81,7 +92,6 @@ export default {
         this.title = "Video Đã Xem";
       }
       await this.formatTime();
-      console.log(this.list);
       this.check = true;
     },
     async formatTime() {
@@ -115,8 +125,11 @@ export default {
     deleteVideo(id) {
       this.deleteVideoFb({
         id: id,
-        type: "watched",
+        type: this.type,
       });
+      let index = this.list.findIndex((video) => video.video.id == id);
+      this.list.splice(index, 1);
+      console.log(this.list);
     },
   },
   watch: {
@@ -124,6 +137,7 @@ export default {
       this.check = false;
       this.createdMethod();
     },
+    
   },
 };
 </script>

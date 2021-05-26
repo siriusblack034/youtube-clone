@@ -88,9 +88,11 @@ export default {
         type: "searchList",
       });
       await this.setVideoDetailsSearch({
-        part: "statistics",
+        part: "statistics,contentDetails",
       });
+
       this.items = this.searchList;
+      console.log(this.items);
       this.checkData = true;
     },
     searchQuery() {

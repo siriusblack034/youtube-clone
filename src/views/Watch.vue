@@ -1,5 +1,5 @@
   <template>
-  <div class="container" v-if="init">
+  <div class="container" v-if="check">
     <div class="grid">
       <div class="row">
         <div class="col l-2 m-0 c-0"></div>
@@ -37,6 +37,7 @@ export default {
       idVideo: this.$route.query.v,
       videoStore: {},
       init: false,
+      check: false,
     };
   },
   components: {
@@ -45,7 +46,6 @@ export default {
   },
   async created() {
     await this.callApi();
-    this.init = true;
   },
   methods: {
     ...mapActions("listVideo", ["setVideo", "setList", "addInformVideo"]),
@@ -73,10 +73,12 @@ export default {
           },
         });
       }
+      this.check = true;
     },
   },
   watch: {
     $route(to, from) {
+      this.check = false;
       this.idVideo = to.query.v;
       this.callApi();
     },

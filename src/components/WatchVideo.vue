@@ -14,8 +14,11 @@
         </span>
 
         <div class="player__inform-des-react">
-          <div @click="like" class="player__inform-des-item">
-            <i class="fas fa-thumbs-up"></i>
+          <div @click="actionLike()" class="player__inform-des-item">
+            <i
+              class="fas fa-thumbs-up"
+              :style="{ color: react.like ? 'red' : '#7c7c7c' }"
+            ></i>
             <span>
               {{
                 video.data.items[0].statistics.likeCount | formatNumber
@@ -23,8 +26,11 @@
             >
             <span class="explain-react">Thích</span>
           </div>
-          <div class="player__inform-des-item">
-            <i class="fas fa-thumbs-down"></i>
+          <div class="player__inform-des-item" @click="actionDisLike()">
+            <i
+              class="fas fa-thumbs-down"
+              :style="{ color: react.dislike ? 'red' : '#7c7c7c' }"
+            ></i>
             <span>
               {{
                 video.data.items[0].statistics.dislikeCount | formatNumber
@@ -98,21 +104,22 @@ export default {
   },
   mixins: [checkAuth],
   created() {
-    console.log("created: ", this.video);
     let self = this;
-    console.log("self.video: ", self.video);
     if (self.video && self.video.data) {
       self.idChannel = self.video.data.items[0].snippet.channelId;
       self.checkSubcriber();
+      self.checkReact();
     }
-    console.log("created: ", this.idChannel);
   },
   data() {
     return {
       idChannel: "",
       subcribe: false,
       contentDes: false,
-      statusLike: false,
+      react: {
+        like: false,
+        dislike: false,
+      },
       informVideo: {
         srcImgChannel:
           "https://yt3.ggpht.com/ytc/AAUvwnhsyJc9p6MwF2AGPnieeLJFHVe3IHP04vxvDHYgGQ=s48-c-k-c0x00ffffff-no-rj",
@@ -121,7 +128,7 @@ export default {
   },
 
   computed: {
-    ...mapState("user", ["listChannel"]),
+    ...mapState("user", ["listChannel", "listVideo"]),
     subcribeButton() {
       if (this.subcribe == false) {
         return "btn--dangerous";
@@ -154,15 +161,22 @@ export default {
         this.addvideoFb();
       }
     },
+    checkReact() {
+      let id = this.video.data.items[0].id;
+      let list = this.listVideo.videoLiked;
+      console.log({ list, id });
+      this.react.like = list.some((video) => video.id == id);
+    },
     checkSubcriber() {
       let check = this.listChannel.some(
         (channel) => channel.id == this.idChannel
       );
       this.subcribe = check ? true : false;
     },
-    like() {
+    actionLike() {
       if (this.isLogin) {
-        if (!this.statusLike) {
+        this.react.like = !this.react.like;
+        if (this.react.like) {
           this.addVideo({
             video: {
               id: this.video.data.items[0].id,
@@ -170,13 +184,25 @@ export default {
             },
             type: "videoLiked",
           });
+          this.react.dislike = false;
         } else {
           this.deleteVideoFb({
             id: this.video.data.items[0].id,
             type: "videoLiked",
           });
         }
-        this.statusLike = !this.statusLike;
+      }
+    },
+    actionDisLike() {
+      if (this.isLogin) {
+        this.react.dislike = !this.react.dislike;
+        if (this.react.dislike) {
+          this.deleteVideoFb({
+            id: this.video.data.items[0].id,
+            type: "videoLiked",
+          });
+          this.react.like = false;
+        }
       }
     },
     stateSub() {
@@ -186,7 +212,7 @@ export default {
         return "Đăng Ký";
       }
     },
-    sub () {
+    sub() {
       console.log(this.idChannel);
       if (!this.subcribe) {
         this.addChannel({
@@ -271,6 +297,7 @@ export default {
   padding: 4px;
   text-align: center;
   animation: fadeIn ease-in 0.2s;
+  z-index: 1;
 }
 .player__inform-des-item--active {
   color: var(--success-color);

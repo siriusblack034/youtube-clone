@@ -9,11 +9,16 @@
         },
       }"
     >
-      <img
-        :src="video.snippet.thumbnails.high.url"
-        alt="imgvideo"
-        class="item__img"
-      />
+      <div class="item-top">
+        <img
+          :src="video.snippet.thumbnails.high.url"
+          alt="imgvideo"
+          class="item__img"
+        />
+        <span class="item-top__duration">{{
+          video.contentDetails.duration | durationVideo
+        }}</span>
+      </div>
       <div class="item__title">
         <img
           v-if="!isChannel"
@@ -77,9 +82,24 @@ export default {
   text-decoration: none;
   color: var(--text-color);
 }
+.item-top {
+  position: relative;
+}
+.item-top__duration {
+  background-color: rgba(0, 0, 0, 0.2);
+  position: absolute;
+  bottom: 10px;
+  right: 16px;
+  color: white;
+  font-size: 1.4rem;
+  font-weight: 600;
+  line-height: 1.8rem;
+}
 .item__img {
   width: 100%;
+  position: relative;
 }
+
 .item__title {
   margin: 8px 0;
   display: flex;

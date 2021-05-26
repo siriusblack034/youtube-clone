@@ -1,104 +1,114 @@
 <template>
-  <header class="header" v-click-outside="hide">
-    <div class="header-left">
-      <div class="header-left__nav">
-        <i class="fas fa-bars" @click="showNav"></i>
-        <div
-          class="nav-overlay"
-          @click="hideNav"
-          :style="{ display: style.display }"
-        ></div>
-        <nav-bar-body
-          :isLogin="isLogin"
-          :style="{ transform: `translateX(${style.transitionX})` }"
-          v-bind:styles="style"
-          @styles="style"
-          :viewpoint="viewpoint"
-        ></nav-bar-body>
-      </div>
-      <div class="header__logo">
-        <router-link tag="a" to="/" class="header__logo-link">
-          <img
-            src="https://cdn.pixabay.com/photo/2015/04/13/17/45/icon-720944_960_720.png"
-            alt=""
-          />
-          <span class="header__logo-hover"> Trang chủ của Youtube </span>
-        </router-link>
-        <span class="header__logo-text">VN</span>
-      </div>
-    </div>
-    <div class="header__center">
-      <div class="header__search">
-        <div action="" role="search" class="header__search-form">
-          <input
-            type="text"
-            placeholder="Tìm kiếm"
-            class="header__search-form-input"
-            @keyup.enter="onSubmit()"
-            v-model="input"
-          />
+  <div>
+    <header class="header" v-click-outside="hide">
+      <div class="header-left" :style="{ display: search ? 'none' : 'flex' }">
+        <div class="header-left__nav">
+          <i class="fas fa-bars" @click="showNav"></i>
+          <div
+            class="nav-overlay"
+            @click="hideNav"
+            :style="{ display: style.display }"
+          ></div>
+          <nav-bar-body
+            :isLogin="isLogin"
+            :style="{ transform: `translateX(${style.transitionX})` }"
+            v-bind:styles="style"
+            @styles="style"
+            :viewpoint="viewpoint"
+          ></nav-bar-body>
         </div>
-        <button class="header__search-form-btn btn" @click="onSubmit">
-          <i class="fas fa-search"></i>
-          <span class="note"> Tìm kiếm </span>
-        </button>
-      </div>
-      <div
-        class="header__search-voice"
-        @click="toggle(2)"
-        :class="{ activeButton: activeIndex == 2 }"
-      >
-        <i class="fas fa-microphone"> </i>
-        <span class="note">Tìm kiếm bằng giọng nói</span>
-      </div>
-    </div>
-    <div class="header-right">
-      <button
-        class="header-right__app"
-        @click="toggle(3)"
-        :class="{ activeButton: activeIndex == 3 }"
-      >
-        <i class="fas fa-th"></i>
-        <span class="note">Các ứng dụng của youtube</span>
-        <notice />
-      </button>
-      <div
-        class="header-right__setting"
-        @click="toggle(4)"
-        :class="{ activeButton: activeIndex == 4 }"
-      >
-        <i class="fas fa-ellipsis-v"></i>
-        <span class="note">Cài đặt</span>
-      </div>
-      <div v-if="isLogin" class="header-right__log-in">
-        <img
-          @click="isActive = !isActive"
-          v-click-outside="hideLogin"
-          src="https://yt3.ggpht.com/yti/ANoDKi7r7bs5Qp_ttOXbkLbbwWUY57qAjs1e4PTorZaZ=s88-c-k-c0x00ffffff-no-rj-mo"
-          alt="account-img"
-        />
-        <ul class="header-right__login-list" :class="{ active: isActive }">
-          <li class="header-right__login-item">
+        <div class="header__logo">
+          <router-link tag="a" to="/" class="header__logo-link">
             <img
-              src="https://yt3.ggpht.com/yti/ANoDKi7r7bs5Qp_ttOXbkLbbwWUY57qAjs1e4PTorZaZ=s88-c-k-c0x00ffffff-no-rj-mo"
-              alt="account-img"
+              src="https://cdn.pixabay.com/photo/2015/04/13/17/45/icon-720944_960_720.png"
+              alt=""
             />
-            <span>{{ auth.email }}</span>
-          </li>
-          <li @click="logout" class="header-right__login-item">Đăng xuất</li>
-        </ul>
+            <span class="header__logo-hover"> Trang chủ của Youtube </span>
+          </router-link>
+          <span class="header__logo-text">VN</span>
+        </div>
       </div>
-      <router-link
-        v-else
-        tag="button"
-        class="header-right__log-up btn btn-primary"
-        to="/login"
-      >
-        <i class="fas fa-user-circle"></i>
-        Đăng nhập
-      </router-link>
-    </div>
-  </header>
+      <div class="header__center">
+        <div class="header__search">
+          <button
+            class="header__search-cancel header__search-form-btn btn"
+            :style="{ display: search ? 'block' : 'none' }"
+            @click="cancelSearch"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+          <div action="" role="search" class="header__search-form">
+            <input
+              type="text"
+              placeholder="Tìm kiếm"
+              class="header__search-form-input hide-on-mobile"
+              @keyup.enter="onSubmit()"
+              v-model="input"
+              :style="{ display: search ? 'block' : '' }"
+            />
+          </div>
+          <button class="header__search-form-btn btn" @click="onSubmit">
+            <i class="fas fa-search"></i>
+            <span class="note"> Tìm kiếm </span>
+          </button>
+        </div>
+        <div
+          class="header__search-voice"
+          @click="toggle(2)"
+          :class="{ activeButton: activeIndex == 2 }"
+        >
+          <i class="fas fa-microphone"> </i>
+          <span class="note">Tìm kiếm bằng giọng nói</span>
+        </div>
+      </div>
+      <div class="header-right" :style="{ display: search ? 'none' : 'flex' }">
+        <button
+          class="header-right__app hide-on-mobile"
+          @click="toggle(3)"
+          :class="{ activeButton: activeIndex == 3 }"
+        >
+          <i class="fas fa-th"></i>
+          <span class="note">Các ứng dụng của youtube</span>
+          <notice />
+        </button>
+        <div
+          class="header-right__setting hide-on-mobile"
+          @click="toggle(4)"
+          :class="{ activeButton: activeIndex == 4 }"
+        >
+          <i class="fas fa-ellipsis-v"></i>
+          <span class="note">Cài đặt</span>
+        </div>
+        <div v-if="isLogin" class="header-right__log-in">
+          <img
+            @click="isActive = !isActive"
+            v-click-outside="hideLogin"
+            src="https://yt3.ggpht.com/yti/ANoDKi7r7bs5Qp_ttOXbkLbbwWUY57qAjs1e4PTorZaZ=s88-c-k-c0x00ffffff-no-rj-mo"
+            alt="account-img"
+          />
+          <ul class="header-right__login-list" :class="{ active: isActive }">
+            <li class="header-right__login-item">
+              <img
+                src="https://yt3.ggpht.com/yti/ANoDKi7r7bs5Qp_ttOXbkLbbwWUY57qAjs1e4PTorZaZ=s88-c-k-c0x00ffffff-no-rj-mo"
+                alt="account-img"
+              />
+              <span>{{ auth.email }}</span>
+            </li>
+            <li @click="logout" class="header-right__login-item">Đăng xuất</li>
+          </ul>
+        </div>
+        <router-link
+          v-else
+          tag="button"
+          class="header-right__log-up btn btn-primary"
+          to="/login"
+        >
+          <i class="fas fa-user-circle"></i>
+          Đăng nhập
+        </router-link>
+      </div>
+    </header>
+  </div>
 </template>
 <script>
 import Notice from "./Notice";
@@ -123,6 +133,8 @@ export default {
       },
       viewpoint: 1,
       isLogin: false,
+      searchMobile: false,
+      responsiveMobile: false,
     };
   },
 
@@ -130,7 +142,13 @@ export default {
     window.addEventListener("resize", this.handleResize);
     this.handleResize();
   },
-
+  computed: {
+    search() {
+      if (this.responsiveMobile && this.searchMobile) {
+        return "display : none";
+      }
+    },
+  },
   methods: {
     ...mapActions("user", ["userLogout"]),
     handleResize(event) {
@@ -142,6 +160,11 @@ export default {
         this.viewpoint = 0; // tablet&mobile
         this.style.display = "none";
         this.style.transitionX = "-100%";
+      }
+      if (window.innerWidth < 739) {
+        this.responsiveMobile = true;
+      } else {
+        this.responsiveMobile = false;
       }
     },
     toggle(index) {
@@ -160,9 +183,7 @@ export default {
       this.style.display = "none";
       this.style.transitionX = "-100%";
     },
-    search() {
-      return this.input;
-    },
+
     hideLogin() {
       this.isActive = false;
     },
@@ -172,15 +193,19 @@ export default {
         this.$router.push({
           name: "Result",
           query: {
-            search_query: this.search(),
+            search_query: this.input,
           },
         });
       }
+      this.searchMobile = true;
     },
     async logout() {
       console.log("logout");
       await this.userLogout();
       this.isLogin = false;
+    },
+    cancelSearch() {
+      this.searchMobile = false;
     },
   },
   destroyed() {
@@ -269,7 +294,6 @@ export default {
   flex: 1;
   display: flex;
   align-items: center;
-  border: 1px solid #e6e6e6;
   border-radius: 3px;
 }
 .header__search-form {
@@ -282,7 +306,8 @@ export default {
   font-size: 1.6rem;
   line-height: 2.6rem;
   font-weight: 400;
-  border: none;
+
+  border: 1px solid #e6e6e6;
 }
 .header__search-form-input:focus {
   outline: rgba(0, 0, 0, 0.1) auto 1px;
@@ -462,5 +487,8 @@ export default {
 }
 .active {
   display: block;
+}
+.header__search-cancel {
+  display: none;
 }
 </style>

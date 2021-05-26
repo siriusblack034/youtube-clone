@@ -3,7 +3,7 @@ export const getListVideoHome = {
   async created() {
     await this.setList({
       uri: {
-        part: "snippet",
+        part: "snippet,contentDetails",
         chart: "mostPopular",
         maxResults: 50,
       },

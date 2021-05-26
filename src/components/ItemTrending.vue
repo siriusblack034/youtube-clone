@@ -28,9 +28,9 @@
         </div>
       </div>
     </router-link>
-    <button class="item__content-add" v-if="!id">
+    <button class="item__content-add" v-if="!id && checkVideo">
       <i class="fas fa-ellipsis-v"></i>
-      <ul class="item__content-add-list">
+      <ul class="item__content-add-list" @click="addWachtLate">
         <li class="item__content-add-item">
           <i class="fas fa-clock"></i>
           <span>Lưu vào danh sách xem sau</span>
@@ -53,13 +53,16 @@ export default {
       type: String,
       default: null,
     },
+    checkVideo: {
+      type: Boolean,
+      default: false,
+    },
   },
   async created() {
     this.callData();
   },
   computed: {
     returnItem() {
-      console.log(this.item);
       return this.item;
     },
   },
@@ -73,6 +76,7 @@ export default {
   },
   methods: {
     ...mapActions("listVideo", ["setVideo", "addInformVideo"]),
+    ...mapActions("user", ["addVideo"]),
     async callData() {
       if (this.id) {
         await this.setVideo({
@@ -97,6 +101,15 @@ export default {
         return this.video.statistics.viewCount;
       }
       return this.video.snippet.view;
+    },
+    addWachtLate() {
+      this.addVideo({
+        type: "watchLate",
+        video: {
+          id: this.item.id,
+          timeAt: new Date().getTime(),
+        },
+      });
     },
   },
 };
@@ -164,14 +177,16 @@ export default {
   -webkit-line-clamp: 2;
 }
 .item__img > span {
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(0, 0, 0, 0.8);
   position: absolute;
   bottom: 10px;
-  right: 28px;
+  right: 16px;
   color: white;
   font-size: 1.4rem;
   font-weight: 600;
   line-height: 1.8rem;
+  padding: 2px;
+  border-radius: 2px;
 }
 .item__img > img {
   width: 100%;

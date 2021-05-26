@@ -250,14 +250,19 @@ export default {
   methods: {
     ...mapActions("listVideo", ["setChannelDetails"]),
     async callChannel() {
-      let id = this.listChannel[0].id;
-      console.log(this.listChannel[0].id);
-      await this.setChannelDetails({
-        part: "snippet",
-        id,
-      });
-      console.log(this.channelDetails);
-      this.channels.push(this.channelDetails);
+      this.channels = [];
+      Promise.all(
+        this.listChannel.map(async (channel, index) => {
+          if (index <= 6) {
+            let id = channel.id;
+            await this.setChannelDetails({
+              part: "snippet",
+              id,
+            });
+            this.channels.push(this.channelDetails);
+          }
+        })
+      );
     },
 
     hideNav() {
@@ -272,7 +277,9 @@ export default {
     },
   },
   watch: {
-    channels: () => {},
+    listChannel: (old, cur) => {
+      console.log({ old, crr });
+    },
   },
 };
 </script>

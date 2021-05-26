@@ -33,15 +33,11 @@ const mutations = {
   },
   setVideoDetailsSearch(state, data) {
     let id = data.data.items[0].id
-    let view = data.data.items[0].statistics.viewCount
-    let like = data.data.items[0].statistics.likeCount
-    let disLike = data.data.items[0].statistics.dislikeCount
-    let comment = data.data.items[0].statistics.commentCount
-    let item = state.searchList.find(item => item.id.videoId == id).snippet
-    item.view = view
-    item.like = like
-    item.dislike = disLike
-    item.comment = comment
+    let statistics = data.data.items[0].statistics
+    let contentDetails = data.data.items[0].contentDetails
+    let item = state.searchList.find(item => item.id.videoId == id)
+    item.statistics = statistics
+    item.contentDetails = contentDetails
   },
   setChannelDetails(state, data) {
     state.channelDetails = data
@@ -110,13 +106,13 @@ const actions = {
         })
     }
   },
-  setVideoDetailsSearch({ commit, state }, params) {
+  async setVideoDetailsSearch({ commit, state }, params) {
     for (let i = 0; i < state.searchList.length; i++) {
       let kind = state.searchList[i].id.kind;
       if (kind == 'youtube#video') {
         let id = state.searchList[i].id.videoId;
         params.id = id
-        videoService.getVideoDetails(params).then(response => {
+        await videoService.getVideoDetails(params).then(response => {
           if (response) {
             commit('setVideoDetailsSearch', response)
           }
